@@ -177,4 +177,4 @@ Fill this in as you go to track actual vs. estimated spending:
 
 ---
 
-*Azure AI Labs — JustJaysAiLabs | Template only — contains no real credentials*
+*Azure AI Labs — JustJay | Template only — contains no real credentials*
