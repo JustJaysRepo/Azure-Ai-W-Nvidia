@@ -183,4 +183,4 @@ See [COST_GUIDE.md](Docs/COST_GUIDE.md) for full breakdown, budget alert setup, 
 
 ---
 
-*Built by JustJaysAiLabs | Lab series based on NVIDIA Hackathon task structure*
+*Built by JustJay | Lab series based on NVIDIA Hackathon task structure*
