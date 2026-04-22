@@ -67,7 +67,7 @@ cd Azure-Ai-W-Nvidia
 copy Docs\CREDENTIALS_TRACKER.example.md CREDENTIALS_TRACKER.md
 ```
 
-Confirm `CREDENTIALS_TRACKER.md` is listed in `.gitignore` before filling it in.
+Confirm `CREDENTIAL_TRACKER.md` is listed in `.gitignore` before filling it in.
 
 ### 3. Follow the lab setup docs in order
 
