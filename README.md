@@ -109,7 +109,7 @@ dotnet user-secrets set "AzureOpenAI:ApiKey" "your-key-here"
 dotnet user-secrets set "AzureOpenAI:DeploymentName" "gpt4o-deployment"
 ```
 
-See [CREDENTIALS_TRACKER.example.md](Docs/CREDENTIALS_TRACKER.example.md) for the full list of secrets needed per lab.
+See [CREDENTIAL_TRACKER.example.md](Docs/CREDENTIALS_TRACKER.example.md) for the full list of secrets needed per lab.
 
 ---
 

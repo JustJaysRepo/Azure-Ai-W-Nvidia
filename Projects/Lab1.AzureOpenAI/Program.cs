@@ -19,10 +19,10 @@ while (true)
     var input = Console.ReadLine();
     if (input?.ToLower() == "exit") break;
     var messages = new List<ChatMessage>
- {
- new SystemChatMessage("You are a helpful assistant."),
- new UserChatMessage(input!)
- };
+    {
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage(input!)
+    };
     var completion = await chatClient.CompleteChatAsync(messages);
     Console.WriteLine($"Assistant: {completion.Value.Content[0].Text}\n");
 }
