@@ -188,4 +188,214 @@ User secrets are stored outside the repo by design and do not need to be in `.gi
 
 ---
 
-*Lab 2 setup steps will be added upon completion of Lab 2.*
+## Lab 2: Azure AI Search
+
+### Project Scaffolding
+
+Run from the solution root:
+
+```powershell
+dotnet new console -n Lab2.AISearch -o Projects\Lab2.AISearch
+dotnet sln Azure-Ai-W-Nvidia.sln add Projects\Lab2.AISearch\Lab2.AISearch.csproj --solution-folder Projects
+```
+
+### Azure Portal Steps
+
+#### Part 1: Create the Search Service
+
+1. Azure Portal → **+ Create a resource** → Search `Azure AI Search` → **Create**
+2. Fill in Basics:
+   - **Resource Group:** Use existing → `rg-openai-lab`
+   - **Service name:** `aisearch-lab-[yourname][digits]` (globally unique)
+   - **Location:** East US (if Basic tier quota is full, use Central US — see Troubleshooting)
+   - **Pricing tier:** Basic
+3. Scale → Accept defaults (1 replica, 1 partition)
+4. Networking → Public endpoint
+5. **Review + create** → **Create**
+6. Wait 3–5 minutes → **Go to resource**
+
+#### Part 2: Get Credentials
+
+1. Left menu → **Keys**
+2. Copy and save:
+   - Primary admin key
+   - Service URL (`https://aisearch-lab-[name].search.windows.net`)
+
+#### Part 3: Create the Index
+
+> ⚠️ **Portal Change:** The **Import data** wizard no longer includes a Samples option. The **Import and vectorize data** option may also be absent depending on your region. Use the manual JSON approach below.
+
+1. From your search service, click **Add index** (top menu)
+2. Switch to JSON view and paste the following schema:
+
+```json
+{
+  "name": "hotels-sample-index",
+  "fields": [
+    { "name": "HotelId", "type": "Edm.String", "key": true, "searchable": false },
+    { "name": "HotelName", "type": "Edm.String", "searchable": true, "filterable": true },
+    { "name": "Description", "type": "Edm.String", "searchable": true },
+    { "name": "Category", "type": "Edm.String", "searchable": true, "filterable": true },
+    { "name": "Rating", "type": "Edm.Double", "filterable": true, "sortable": true }
+  ]
+}
+```
+
+3. Click **Save**
+
+#### Part 4: Push Sample Documents via PowerShell
+
+Search Explorer is query-only and the Azure CLI `az search` module has no index or document commands. Use this PowerShell REST call to push sample hotel documents directly:
+
+```powershell
+$endpoint = "https://aisearch-lab-yourname###.search.windows.net"
+$apiKey = "YOUR_ADMIN_KEY_HERE"
+$index = "hotels-sample-index"
+
+$body = @{
+    value = @(
+        @{ "@search.action" = "upload"; HotelId = "1"; HotelName = "Fancy Stay Hotel"; Description = "Luxury hotel with rooftop pool and spa facilities"; Category = "Luxury"; Rating = 5.0 },
+        @{ "@search.action" = "upload"; HotelId = "2"; HotelName = "Secret Point Motel"; Description = "Affordable motel with outdoor pool and free breakfast"; Category = "Budget"; Rating = 4.6 },
+        @{ "@search.action" = "upload"; HotelId = "3"; HotelName = "Wellness Retreat"; Description = "Boutique hotel specializing in spa packages and massage therapy"; Category = "Boutique"; Rating = 4.8 }
+    )
+} | ConvertTo-Json -Depth 3
+
+Invoke-RestMethod `
+    -Uri "$endpoint/indexes/$index/docs/index?api-version=2024-07-01" `
+    -Method POST `
+    -Headers @{ "api-key" = $apiKey; "Content-Type" = "application/json" } `
+    -Body $body
+```
+
+A response containing `@odata.context` confirms documents were indexed successfully.
+
+> This PowerShell script is also saved in `Scripts/Push-SampleHotels.ps1` for reuse when recreating the index between sessions.
+
+#### Part 5: Verify in Search Explorer
+
+1. Left menu → **Search Explorer**
+2. Select `hotels-sample-index` from the dropdown
+3. Click **Search** with empty query — all 3 hotels should return as JSON
+
+---
+
+### Project Setup
+
+#### Install Packages
+
+```powershell
+cd Projects\Lab2.AISearch
+dotnet add package Azure.Search.Documents
+dotnet add package Microsoft.Extensions.Configuration.UserSecrets
+```
+
+#### Configure User Secrets
+
+```powershell
+dotnet user-secrets init
+dotnet user-secrets set "AzureSearch:Endpoint" "https://aisearch-lab-yourname###.search.windows.net"
+dotnet user-secrets set "AzureSearch:ApiKey" "YOUR_ADMIN_KEY"
+dotnet user-secrets set "AzureSearch:IndexName" "hotels-sample-index"
+```
+
+#### Program.cs
+
+```csharp
+using Azure;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
+using Microsoft.Extensions.Configuration;
+
+var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
+
+var searchClient = new SearchClient(
+    new Uri(config["AzureSearch:Endpoint"]!),
+    config["AzureSearch:IndexName"]!,
+    new AzureKeyCredential(config["AzureSearch:ApiKey"]!));
+
+Console.WriteLine("Hotel Search (type 'exit' to quit)\n");
+
+while (true)
+{
+    Console.Write("Search: ");
+    var query = Console.ReadLine();
+    if (query?.ToLower() == "exit") break;
+
+    var options = new SearchOptions
+    {
+        Size = 5,
+        Select = { "HotelName", "Description", "Category", "Rating" },
+        IncludeTotalCount = true
+    };
+
+    SearchResults<SearchDocument> results =
+        await searchClient.SearchAsync<SearchDocument>(query, options);
+
+    Console.WriteLine($"\nFound {results.TotalCount} results:\n");
+
+    await foreach (SearchResult<SearchDocument> result in results.GetResultsAsync())
+    {
+        Console.WriteLine($">> {result.Document["HotelName"]} | Rating: {result.Document["Rating"]}");
+        Console.WriteLine($"   {result.Document["Description"]}\n");
+    }
+
+    Console.WriteLine(new string('-', 60));
+}
+```
+
+> **Terminal Note:** Using `★` or emoji characters in Console.WriteLine will render as `?` in Windows terminals running on the Windows-1252 codepage. Use plain ASCII alternatives like `>>` to avoid this.
+
+#### Run
+
+```powershell
+dotnet run
+```
+
+**Expected output:**
+```
+Hotel Search (type 'exit' to quit)
+Search: luxury pool
+Found 2 results:
+
+>> Fancy Stay Hotel | Rating: 5
+   Luxury hotel with rooftop pool and spa facilities
+
+>> Secret Point Motel | Rating: 4.6
+   Affordable motel with outdoor pool and free breakfast
+```
+
+---
+
+### Cost Management — Lab 2
+
+The Basic tier search service bills ~$2.50/day from the moment it is created regardless of usage. **Delete the service between sessions** if you are pausing more than one day between labs:
+
+```powershell
+# Delete search service to stop billing
+az search service delete --name aisearch-lab-yourname### --resource-group rg-openai-lab
+
+# Recreate when resuming (then re-run Push-SampleHotels.ps1)
+az search service create --name aisearch-lab-yourname### --resource-group rg-openai-lab --sku Basic --location centralus
+```
+
+---
+
+## .gitignore Minimum Requirements
+
+Ensure the following are excluded before pushing:
+
+```
+bin/
+obj/
+*.user
+.env
+secrets.json
+CREDENTIALS_TRACKER.md
+```
+
+User secrets are stored outside the repo by design and do not need to be in `.gitignore`, but the above covers all other common leak points.
+
+---
+
+*Lab 3 setup steps will be added upon completion of Lab 3.*
+

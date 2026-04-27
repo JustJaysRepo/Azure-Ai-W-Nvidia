@@ -142,6 +142,10 @@ Azure-Ai-W-Nvidia/
 | Lab 1 | SDK 2.x requires `.Value.Content[0].Text` — not `.Content[0].Text` |
 | Lab 1 | Use base endpoint URL, not the full Target URI |
 | Lab 1 | First responses are slow due to cold start — not a code issue |
+| Lab 2 | East US Basic tier quota fills up — Central US is a reliable fallback |
+| Lab 2 | Import data Samples option removed — create index via JSON editor + REST API |
+| Lab 2 | Azure CLI `az search` has no index/document commands — use REST API directly |
+| Lab 2 | Unicode characters render as `?` in Windows terminals — use ASCII alternatives |
 
 ---
 

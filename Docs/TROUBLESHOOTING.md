@@ -139,4 +139,54 @@ dotnet user-secrets set "AzureOpenAI:ApiKey" "NEW_KEY_HERE"
 
 ---
 
-*Lab 2 troubleshooting entries will be added upon completion of Lab 2.*
+## Lab 2: Azure AI Search
+
+### Issue: East US region unavailable for Basic tier
+
+**Symptom:** Creating a Basic tier search service in East US fails with a quota or availability error.
+
+**Cause:** East US is the most popular Azure region and Basic tier search quota fills up frequently on shared infrastructure.
+
+**Fix:** Select **Central US** during resource creation. All lab functionality works identically regardless of region. Update the region field in your `CREDENTIALS_TRACKER.md` to reflect this.
+
+---
+
+### Issue: Samples option missing from Import data wizard
+
+**Symptom:** The Import data wizard only shows storage and database source options — no Samples entry.
+
+**Cause:** Microsoft removed the built-in Samples option from the Import data wizard. The **Import and vectorize data** option that replaced it may also be absent depending on region.
+
+**Fix:** Create the index manually using the **Add index** JSON editor in the portal, then push documents via PowerShell REST call. Full steps in `SETUP.md` Lab 2 section.
+
+---
+
+### Issue: `az search index create` not recognized
+
+**Symptom:**
+```
+'index' is misspelled or not recognized by the system.
+```
+
+**Cause:** The Azure CLI `az search` module only manages service-level infrastructure (keys, networking, the service itself). It has no commands for index or document management — those operations must go through the REST API directly.
+
+**Fix:** Use PowerShell `Invoke-RestMethod` to call the search REST API directly. The full script is in `SETUP.md` Lab 2 and saved as `Scripts/Push-SampleHotels.ps1`.
+
+---
+
+### Issue: Special characters render as `?` in terminal output
+
+**Symptom:** Characters like `★`, `✓`, or emoji in `Console.WriteLine` output appear as `?` in the Windows terminal.
+
+**Cause:** Windows terminals default to the Windows-1252 codepage which cannot render Unicode characters outside the basic Latin range.
+
+**Fix:** Use plain ASCII alternatives in console output:
+```csharp
+// Instead of ★ or ✓
+Console.WriteLine($">> {hotelName} | Rating: {rating}");
+```
+This is a display-only issue and has no effect on functionality or search results.
+
+---
+
+*Lab 3 troubleshooting entries will be added upon completion of Lab 3.*
