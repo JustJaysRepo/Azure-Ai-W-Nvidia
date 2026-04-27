@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{17
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab1.AzureOpenAI", "Projects\Lab1.AzureOpenAI\Lab1.AzureOpenAI.csproj", "{C6C3010A-50E1-4CC5-9FE5-0B719AE12CA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2.AzureAiSearch", "Projects\Lab2.AzureAiSearch\Lab2.AzureAiSearch.csproj", "{286D1305-E2EB-4118-9166-565A21E66156}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +31,25 @@ Global
 		{C6C3010A-50E1-4CC5-9FE5-0B719AE12CA5}.Release|x64.Build.0 = Release|Any CPU
 		{C6C3010A-50E1-4CC5-9FE5-0B719AE12CA5}.Release|x86.ActiveCfg = Release|Any CPU
 		{C6C3010A-50E1-4CC5-9FE5-0B719AE12CA5}.Release|x86.Build.0 = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|x64.Build.0 = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Debug|x86.Build.0 = Debug|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|Any CPU.Build.0 = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|x64.ActiveCfg = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|x64.Build.0 = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|x86.ActiveCfg = Release|Any CPU
+		{286D1305-E2EB-4118-9166-565A21E66156}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C6C3010A-50E1-4CC5-9FE5-0B719AE12CA5} = {17245595-230B-9055-A944-863F0DDDA8E8}
+		{286D1305-E2EB-4118-9166-565A21E66156} = {17245595-230B-9055-A944-863F0DDDA8E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A0CDBE4-2546-49D1-B403-B995B59690D0}
