@@ -1,14 +1,16 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
-using Azure.AI.OpenAI.Chat;
-using Microsoft.Extensions.Configuration;
 using OpenAI.Chat;
+using Microsoft.Extensions.Configuration;
+
+
 
 var config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 
 var client = new AzureOpenAIClient(
  new Uri(config["AzureOpenAI:Endpoint"]!),
- new AzureKeyCredential(config["AzureOpenAI:ApiKey"]!));
+ new AzureKeyCredential(config["AzureOpenAI:ApiKey"]!)
+);
 
 var chatClient = client.GetChatClient(config["AzureOpenAI:DeploymentName"]!);
 
